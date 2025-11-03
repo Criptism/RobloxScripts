@@ -32,7 +32,7 @@ local l = true
     while(l==true) do 
         local player = game:GetService("Players").LocalPlayer
         local playerName = player.Name
-        wait(0.5)
+        wait(0.01)
 
         local strength = game.ReplicatedStorage.Data[playerName].Strength.Value
         local formattedStrength = strength
