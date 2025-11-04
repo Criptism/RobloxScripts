@@ -9,6 +9,7 @@ local str = player:WaitForChild("leaderstats"):WaitForChild("Strength")
 local ScreenGui = Instance.new("ScreenGui")
 local ts = Instance.new("TextLabel")
 local UICorner = Instance.new("UICorner")
+local UIStroke = Instance.new("UIStroke", ts)
 
 ScreenGui.Parent = player:WaitForChild("PlayerGui")
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -19,13 +20,15 @@ ts.BackgroundTransparency = 1
 ts.Position = UDim2.new(0.6278, 0, 0.0906, 0) -- same position as before
 ts.Size = UDim2.new(0, 275, 0, 73)
 ts.Font = Enum.Font.FredokaOne
-ts.TextColor3 = Color3.fromRGB(0, 0, 0)
+ts.TextColor3 = Color3.fromRGB(255, 255, 255)
 ts.TextScaled = true
 ts.TextSize = 14.000
 ts.TextWrapped = true
 ts.Active = true
 ts.Draggable = true
 ts.Text = "Earned: 0"
+
+UIStroke.Thickness = 2
 
 --------------------------------------------------------
 -- SCRIPT LOGIC
