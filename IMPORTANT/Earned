@@ -9,17 +9,16 @@ local str = player:WaitForChild("leaderstats"):WaitForChild("Strength")
 local ScreenGui = Instance.new("ScreenGui")
 local ts = Instance.new("TextLabel")
 local UICorner = Instance.new("UICorner")
-local UIGradient = Instance.new("UIGradient")
 
 ScreenGui.Parent = player:WaitForChild("PlayerGui")
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 ts.Name = "EarnedLabel"
 ts.Parent = ScreenGui
-ts.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ts.BackgroundTransparency = 1
 ts.Position = UDim2.new(0.6278, 0, 0.0906, 0) -- same position as before
-ts.Size = UDim2.new(0, 233, 0, 73)
-ts.Font = Enum.Font.DenkOne
+ts.Size = UDim2.new(0, 275, 0, 73)
+ts.Font = Enum.Font.FredokaOne
 ts.TextColor3 = Color3.fromRGB(0, 0, 0)
 ts.TextScaled = true
 ts.TextSize = 14.000
@@ -27,18 +26,6 @@ ts.TextWrapped = true
 ts.Active = true
 ts.Draggable = true
 ts.Text = "Earned: 0"
-
-UICorner.Parent = ts
-
-UIGradient.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0.00, Color3.fromRGB(112, 212, 255)),
-	ColorSequenceKeypoint.new(0.02, Color3.fromRGB(0, 0, 0)),
-	ColorSequenceKeypoint.new(0.98, Color3.fromRGB(112, 212, 255)),
-	ColorSequenceKeypoint.new(1.00, Color3.fromRGB(112, 212, 255))
-}
-UIGradient.Offset = Vector2.new(0.5, 0)
-UIGradient.Rotation = -195.5
-UIGradient.Parent = ts
 
 --------------------------------------------------------
 -- SCRIPT LOGIC
