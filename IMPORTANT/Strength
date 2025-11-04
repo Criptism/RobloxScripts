@@ -1,6 +1,7 @@
 local ScreenGui = Instance.new("ScreenGui")
 local ts = Instance.new("TextLabel")
 local UICorner = Instance.new("UICorner")
+local UIStroke = Instance.new("UIStroke", ts)
 
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -18,6 +19,10 @@ ts.TextSize = 14.000
 ts.TextWrapped = true
 ts.Active = true
 ts.Draggable = true
+
+UIStroke.Thickness = 2
+UIStroke.Color = Color3.fromRGB(0, 0, 0) -- black outline
+UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
 
 local l = true
 
