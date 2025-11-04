@@ -60,6 +60,6 @@ end)
 -- Update label
 task.spawn(function()
 	while task.wait(0.1) do
-		ts.Text = "Earned: " .. formatNumber(earned)
+		ts.Text = formatNumber(earned).. " | ".. earned
 	end
 end)
