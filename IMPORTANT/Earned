@@ -59,7 +59,7 @@ end)
 
 -- Update label
 task.spawn(function()
-	while task.wait(0.1) do
+	while task.wait(0.01) do
 		ts.Text = formatNumber(earned).. " | ".. earned
 	end
 end)
