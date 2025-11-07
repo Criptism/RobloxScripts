@@ -46,9 +46,9 @@ local L1=I:CreateLabel"Strength: 0"
 local L2=I:CreateLabel"Gained: 0"
 local L3=I:CreateLabel"Weight: 0"
 
-task.spawn(function() repeat task.wait(.5) L1:Set("Strength:"..s.Value) until s.Value>=9e20 end)
-task.spawn(function() local v=l.Value local t=0 repeat task.wait(.05) local d=l.Value-v t=t+d v=l.Value L2:Set("Gained:"..t) until t>=9e17 end)
-task.spawn(function() repeat task.wait(.05) local n=0 for _,v in ipairs(p.Backpack:GetChildren())do if v.Name=="Double Weight"then n=n+1 end end if n==0 then for _,v in ipairs(c:GetChildren())do if v.Name=="Double Weight"then n=n+1 end end end L3:Set("Weight:"..n) until n>=99999999 end)
+task.spawn(function() repeat task.wait(.5) L1:Set("Strength: "..s.Value) until s.Value>=9e20 end)
+task.spawn(function() local v=l.Value local t=0 repeat task.wait(.05) local d=l.Value-v t=t+d v=l.Value L2:Set("Gained: "..t) until t>=9e17 end)
+task.spawn(function() repeat task.wait(.05) local n=0 for _,v in ipairs(p.Backpack:GetChildren())do if v.Name=="Double Weight"then n=n+1 end end if n==0 then for _,v in ipairs(c:GetChildren())do if v.Name=="Double Weight"then n=n+1 end end end L3:Set("Weight: "..n) until n>=99999999 end)
 
 local M=W:CreateTab"Misc"
 M:CreateSection"Misc"
