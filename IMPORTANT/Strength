@@ -24,25 +24,21 @@ UIStroke.Thickness = 2
 UIStroke.Color = Color3.fromRGB(0, 0, 0) -- black outline
 UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
 
-local l = true
+local RunService = game:GetService("RunService")
 
-    while(l==true) do 
-        local player = game:GetService("Players").LocalPlayer
-        local playerName = player.Name
-        wait(0.01)
+RunService.Heartbeat:Connect(function()
+	local strength = game.ReplicatedStorage.Data[playerName].Strength.Value
+	local formattedStrength = strength
 
-        local strength = game.ReplicatedStorage.Data[playerName].Strength.Value
-        local formattedStrength = strength
+	if formattedStrength >= 1e12 then
+		formattedStrength = string.format("%.2fT", formattedStrength / 1e12)
+	elseif formattedStrength >= 1e9 then
+		formattedStrength = string.format("%.2fB", formattedStrength / 1e9)
+	elseif formattedStrength >= 1e6 then
+		formattedStrength = string.format("%.2fM", formattedStrength / 1e6)
+	elseif formattedStrength >= 1e3 then
+		formattedStrength = string.format("%.2fK", formattedStrength / 1e3)
+	end
 
-        if formattedStrength >= 1e12 then
-            formattedStrength = string.format("%.2fT", formattedStrength / 1e12)
-        elseif formattedStrength >= 1e9 then
-            formattedStrength = string.format("%.2fB", formattedStrength / 1e9)
-        elseif formattedStrength >= 1e6 then
-            formattedStrength = string.format("%.2fM", formattedStrength / 1e6)
-        elseif formattedStrength >= 1e3 then
-            formattedStrength = string.format("%.2fK", formattedStrength / 1e3)
-        end
-
-        ts.Text = formattedStrength.." | "..strength 
-    end
+	ts.Text = formattedStrength .. " | " .. strength
+end)
