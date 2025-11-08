@@ -27,6 +27,7 @@ UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
 local RunService = game:GetService("RunService")
 
 RunService.Heartbeat:Connect(function()
+    local playerName = game:GetService("Players").LocalPlayer
 	local strength = game.ReplicatedStorage.Data[playerName].Strength.Value
 	local formattedStrength = strength
 
