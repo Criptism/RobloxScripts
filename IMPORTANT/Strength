@@ -1,6 +1,5 @@
 local ScreenGui = Instance.new("ScreenGui")
 local ts = Instance.new("TextLabel")
-local UICorner = Instance.new("UICorner")
 local UIStroke = Instance.new("UIStroke", ts)
 
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
@@ -21,25 +20,29 @@ ts.Active = true
 ts.Draggable = true
 
 UIStroke.Thickness = 2
-UIStroke.Color = Color3.fromRGB(0, 0, 0) -- black outline
+UIStroke.Color = Color3.fromRGB(0, 0, 0)
 UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
 
 local RunService = game:GetService("RunService")
+local player = game.Players.LocalPlayer
+local playerName = player.Name
+local l = true
 
 RunService.Heartbeat:Connect(function()
-    local playerName = game:GetService("Players").LocalPlayer
-	local strength = game.ReplicatedStorage.Data[playerName].Strength.Value
-	local formattedStrength = strength
+	if l then
+		local strength = game.ReplicatedStorage.Data[playerName].Strength.Value
+		local formattedStrength = strength
 
-	if formattedStrength >= 1e12 then
-		formattedStrength = string.format("%.2fT", formattedStrength / 1e12)
-	elseif formattedStrength >= 1e9 then
-		formattedStrength = string.format("%.2fB", formattedStrength / 1e9)
-	elseif formattedStrength >= 1e6 then
-		formattedStrength = string.format("%.2fM", formattedStrength / 1e6)
-	elseif formattedStrength >= 1e3 then
-		formattedStrength = string.format("%.2fK", formattedStrength / 1e3)
+		if formattedStrength >= 1e12 then
+			formattedStrength = string.format("%.2fT", formattedStrength / 1e12)
+		elseif formattedStrength >= 1e9 then
+			formattedStrength = string.format("%.2fB", formattedStrength / 1e9)
+		elseif formattedStrength >= 1e6 then
+			formattedStrength = string.format("%.2fM", formattedStrength / 1e6)
+		elseif formattedStrength >= 1e3 then
+			formattedStrength = string.format("%.2fK", formattedStrength / 1e3)
+		end
+
+		ts.Text = formattedStrength .. " | " .. strength
 	end
-
-	ts.Text = formattedStrength .. " | " .. strength
 end)
