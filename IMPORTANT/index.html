@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>RNG GUI (100 Strings + Counter + History)</title>
+  <title>RNG GUI (100 Strings + Counter + Side History)</title>
   <style>
     html,body{
       height:100%;
@@ -16,13 +16,25 @@
       justify-content:center;
     }
 
-    .container{
-      text-align:center;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      max-width: 800px;
+    .layout {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      gap: 40px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .container {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: none;
     }
 
     .label {
@@ -39,6 +51,7 @@
       box-shadow: 0 6px 18px rgba(0,0,0,0.6);
       user-select: none;
       padding: 10px 20px;
+      text-align: center;
     }
 
     .sub {
@@ -82,22 +95,30 @@
       font-weight: 600;
     }
 
+    /* --- SIDE HISTORY PANEL --- */
     .history {
-      margin-top: 20px;
       background: rgba(255,255,255,0.05);
       border-radius: 10px;
-      max-height: 250px;
-      width: 90%;
+      max-height: 400px;
+      width: 320px;
       overflow-y: auto;
-      padding: 10px;
+      padding: 10px 15px;
       text-align: left;
       font-size: 13px;
       line-height: 1.4em;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+
+    .history strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 6px;
+      color: #00aaff;
     }
 
     .history-entry {
       opacity: 0.85;
-      margin: 2px 0;
+      margin: 3px 0;
     }
 
     .hit {
@@ -111,16 +132,18 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <div id="label" class="label">...</div>
-    <div id="attempt" class="attempt">Attempt #0</div>
-    <button id="rollBtn">Roll</button>
-    <div id="counter" class="counter">🎯 Hits: 0</div>
-    <div id="picked" class="picked" aria-live="polite"></div>
-    <div class="sub">Target: <code>tttttttttttttg</code></div>
+  <div class="layout">
+    <div class="container">
+      <div id="label" class="label">...</div>
+      <div id="attempt" class="attempt">Attempt #0</div>
+      <button id="rollBtn">Roll</button>
+      <div id="counter" class="counter">🎯 Hits: 0</div>
+      <div id="picked" class="picked" aria-live="polite"></div>
+      <div class="sub">Target: <code>tttttttttttttg</code></div>
+    </div>
 
     <div id="history" class="history">
-      <strong>History:</strong><br>
+      <strong>History:</strong>
       <span class="history-entry">No attempts yet.</span>
     </div>
   </div>
@@ -146,14 +169,7 @@
     ];
 
     const TARGET = "tttttttttttttg";
-
-    function randomIndex(max) {
-      if (window.crypto && window.crypto.getRandomValues) {
-        const arr = new Uint32Array(1);
-        window.crypto.getRandomValues(arr);
-        return arr[0] % max;
-      } else return Math.floor(Math.random() * max);
-    }
+    const MAX_HISTORY = 100;
 
     const labelEl = document.getElementById('label');
     const pickedEl = document.getElementById('picked');
@@ -166,9 +182,17 @@
     let attemptCount = 0;
     let historyLog = [];
 
+    function randomIndex(max) {
+      if (window.crypto && window.crypto.getRandomValues) {
+        const arr = new Uint32Array(1);
+        window.crypto.getRandomValues(arr);
+        return arr[0] % max;
+      } else return Math.floor(Math.random() * max);
+    }
+
     function updateHistoryDisplay() {
       if (historyLog.length === 0) {
-        historyEl.innerHTML = "<strong>History:</strong><br><span class='history-entry'>No attempts yet.</span>";
+        historyEl.innerHTML = "<strong>History:</strong><span class='history-entry'>No attempts yet.</span>";
         return;
       }
 
@@ -176,7 +200,7 @@
         const colorClass = entry.hit ? "hit" : "miss";
         return `<div class="history-entry ${colorClass}">#${entry.attempt}: "${entry.string}" ${entry.hit ? "🎯 HIT!" : ""}</div>`;
       }).join("");
-      historyEl.innerHTML = "<strong>History:</strong><br>" + entries;
+      historyEl.innerHTML = "<strong>History:</strong>" + entries;
       historyEl.scrollTop = historyEl.scrollHeight;
     }
 
@@ -189,22 +213,7 @@
       if (isHit) {
         labelEl.textContent = "🎯 RNG hit! The target string was picked!";
         hitCount++;
-        attemptCount = 0; // reset attempts
-        historyLog.push({ attempt: "HIT RESET", string: picked, hit: true });
+        historyLog.push({ attempt: attemptCount, string: picked, hit: true });
+        attemptCount = 0; // reset attempts after hit
       } else {
-        labelEl.textContent = `❌ RNG missed. Nothing happens. (Attempt #${attemptCount})`;
-        historyLog.push({ attempt: attemptCount, string: picked, hit: false });
-      }
-
-      pickedEl.textContent = 'Picked string: "' + picked + `" (index ${idx + 1})`;
-      counterEl.textContent = `🎯 Hits: ${hitCount}`;
-      attemptEl.textContent = `Attempt #${attemptCount}`;
-
-      updateHistoryDisplay();
-    }
-
-    rollBtn.addEventListener('click', rollOnce);
-    rollOnce();
-  </script>
-</body>
-</html>
+        labelEl.textContent = `❌ RNG missed. Nothing happens. (Attempt #${attemptCount
