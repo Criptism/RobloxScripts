@@ -216,4 +216,24 @@
         historyLog.push({ attempt: attemptCount, string: picked, hit: true });
         attemptCount = 0; // reset attempts after hit
       } else {
-        labelEl.textContent = `❌ RNG missed. Nothing happens. (Attempt #${attemptCount
+        labelEl.textContent = `❌ RNG missed. Nothing happens. (Attempt #${attemptCount})`;
+        historyLog.push({ attempt: attemptCount, string: picked, hit: false });
+      }
+
+      // Auto-clear when history fills up
+      if (historyLog.length > MAX_HISTORY) {
+        historyLog = [];
+        historyLog.push({ attempt: "-", string: "History cleared automatically", hit: false });
+      }
+
+      pickedEl.textContent = `Picked string: "${picked}" (index ${idx + 1})`;
+      counterEl.textContent = `🎯 Hits: ${hitCount}`;
+      attemptEl.textContent = `Attempt #${attemptCount}`;
+      updateHistoryDisplay();
+    }
+
+    rollBtn.addEventListener('click', rollOnce);
+    rollOnce();
+  </script>
+</body>
+</html>
