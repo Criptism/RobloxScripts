@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>RNG GUI (100 Strings)</title>
+  <title>RNG GUI (100 Strings + Counter)</title>
   <style>
     html,body{
       height:100%;
@@ -18,21 +18,26 @@
 
     .container{
       text-align:center;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
     }
 
     .label {
       width: 400px;
-      height: 100px;
+      min-height: 80px;
       display:flex;
       align-items:center;
       justify-content:center;
-      margin: 0 auto 14px auto;
-      background: rgba(0,0,0,0.55);
-      border-radius: 8px;
+      margin-bottom: 20px;
+      background: rgba(0,0,0,0.75);
+      border-radius: 12px;
       font-weight:700;
-      font-size: clamp(18px, 3.5vw, 28px);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+      font-size: clamp(18px, 3.5vw, 26px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.6);
       user-select: none;
+      padding: 10px 20px;
     }
 
     .sub {
@@ -42,64 +47,65 @@
     }
 
     button {
-      padding: 8px 14px;
-      border-radius: 8px;
+      padding: 10px 16px;
+      border-radius: 10px;
       border: 0;
       background: #2e8bff;
       color: #fff;
       font-weight:600;
       cursor:pointer;
+      transition: background 0.15s;
     }
 
+    button:hover { background: #1c70d8; }
     button:active { transform: translateY(1px); }
+
     .picked {
       margin-top: 10px;
       font-size: 13px;
       opacity: 0.9;
       color: #ddd;
     }
+
+    .counter {
+      margin-top: 10px;
+      font-size: 16px;
+      color: #00ff9d;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div id="label" class="label">...</div>
-    <div>
-      <button id="rollBtn">Roll</button>
-    </div>
+    <button id="rollBtn">Roll</button>
+    <div id="counter" class="counter">🎯 Hits: 0</div>
     <div id="picked" class="picked" aria-live="polite"></div>
     <div class="sub">Target: <code>tttttttttttttg</code></div>
   </div>
 
   <script>
-    // Generate 100 random strings + your target
     const strings = [
-      "tttttttttttttg", // target
-      "Yes!", "No!", "Maybe...", "Hmm...", "Error: undefined", "Success!",
-      "Try again later", "Absolutely!", "Probably not", "Wait—what?",
-      "Loading...", "Done!", "Calculating...", "Processing...",
-      "Lucky guess?", "Better luck next time!", "Not today", "Whoops!",
-      "Yesn't", "Why tho?", "You wish!", "Suspicious...", "Almost!", "Retry?",
-      "Boom!", "Kaboom!", "System overloaded", "404 Not Found",
-      "Approved", "Denied", "Granted", "Refused", "It’s fate!", "Coin flip...",
-      "Heads!", "Tails!", "Yup", "Nope", "Try harder!", "L",
-      "W", "Maybe later", "Hmmmm", "Suspense...", "Wait for it...", "Ha!",
-      "Glitched?", "Randomized!", "Pick again", "Recalculating...",
-      "Deja vu", "In progress...", "Pending...", "Done already?", "Yay!",
-      "Bruh", "Seriously?", "Hmm.", "Oh no", "Oh yes", "Why not?",
-      "Wait...", "Processing error", "Debugging...", "Restart required",
-      "Rebooting...", "Reticulating splines...", "Loading data...",
-      "Success!!", "Try one more time", "No signal", "Powering up...",
-      "Access granted", "Access denied", "Hello world!", "Ping!", "Pong!",
-      "Beep boop", "Calculating odds...", "Luck = 0", "Luck = 100",
-      "This is fine", "That’s illegal", "Corrupted", "Rewriting reality...",
-      "You saw nothing", "RNG loves you", "RNG hates you", "Neutral outcome",
-      "Cosmic balance...", "Out of bounds", "Random seed", "Try again?",
-      "Maybe yes", "Maybe no", "Quantum fluctuation", "Entropy rising..."
+      "tttttttttttttg", "Yes!", "No!", "Maybe...", "Hmm...", "Error: undefined", "Success!",
+      "Try again later", "Absolutely!", "Probably not", "Wait—what?", "Loading...", "Done!",
+      "Calculating...", "Processing...", "Lucky guess?", "Better luck next time!", "Not today",
+      "Whoops!", "Yesn't", "Why tho?", "You wish!", "Suspicious...", "Almost!", "Retry?",
+      "Boom!", "Kaboom!", "System overloaded", "404 Not Found", "Approved", "Denied", "Granted",
+      "Refused", "It’s fate!", "Coin flip...", "Heads!", "Tails!", "Yup", "Nope", "Try harder!",
+      "L", "W", "Maybe later", "Hmmmm", "Suspense...", "Wait for it...", "Ha!", "Glitched?",
+      "Randomized!", "Pick again", "Recalculating...", "Deja vu", "In progress...", "Pending...",
+      "Done already?", "Yay!", "Bruh", "Seriously?", "Hmm.", "Oh no", "Oh yes", "Why not?",
+      "Wait...", "Processing error", "Debugging...", "Restart required", "Rebooting...",
+      "Reticulating splines...", "Loading data...", "Success!!", "Try one more time", "No signal",
+      "Powering up...", "Access granted", "Access denied", "Hello world!", "Ping!", "Pong!",
+      "Beep boop", "Calculating odds...", "Luck = 0", "Luck = 100", "This is fine",
+      "That’s illegal", "Corrupted", "Rewriting reality...", "You saw nothing", "RNG loves you",
+      "RNG hates you", "Neutral outcome", "Cosmic balance...", "Out of bounds", "Random seed",
+      "Try again?", "Maybe yes", "Maybe no", "Quantum fluctuation", "Entropy rising..."
     ];
 
     const TARGET = "tttttttttttttg";
 
-    // Secure random integer
     function randomIndex(max) {
       if (window.crypto && window.crypto.getRandomValues) {
         const arr = new Uint32Array(1);
@@ -111,6 +117,9 @@
     const labelEl = document.getElementById('label');
     const pickedEl = document.getElementById('picked');
     const rollBtn = document.getElementById('rollBtn');
+    const counterEl = document.getElementById('counter');
+
+    let hitCount = 0;
 
     function rollOnce() {
       const idx = randomIndex(strings.length);
@@ -118,11 +127,13 @@
 
       if (picked === TARGET) {
         labelEl.textContent = "🎯 RNG hit! The target string was picked!";
+        hitCount++;
       } else {
         labelEl.textContent = "❌ RNG missed. Nothing happens.";
       }
 
-      pickedEl.textContent = 'Picked string: "' + picked + '" (index ' + (idx+1) + ')';
+      pickedEl.textContent = 'Picked string: "' + picked + '" (index ' + (idx + 1) + ')';
+      counterEl.textContent = `🎯 Hits: ${hitCount}`;
     }
 
     rollBtn.addEventListener('click', rollOnce);
