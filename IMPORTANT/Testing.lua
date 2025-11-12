@@ -1,0 +1,62 @@
+local p=game:GetService'Players'.LocalPlayer
+local c=p.Character or p.CharacterAdded:Wait()
+local l=p.leaderstats.Strength
+local s=game:GetService'ReplicatedStorage'.Data[p.Name].Strength
+local w=game:GetService'Workspace'
+local d=game:GetService'Lighting'
+local e=game:GetService'MarketplaceService'
+local v=game:GetService'VirtualUser'
+local r=game:GetService'ReplicatedFirst'
+
+p.CameraMaxZoomDistance=1000
+p.Idled:Connect(function() v:Button2Down(Vector2.new(),w.CurrentCamera.CFrame) task.wait(1) v:Button2Up(Vector2.new(),w.CurrentCamera.CFrame) end)
+
+local R=loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local W=R:CreateWindow{ Name="Doggy Hub V3 | Private Farm", LoadingTitle="Doggy Hub V3", LoadingSubtitle="by Auberon_Altas", ConfigurationSaving={ Enabled=true, FileName="Big Hub" }, KeySystem=false }
+
+local T=W:CreateTab"Farming"
+T:CreateSection"Farming"
+T:CreateToggle{ Name="Equip Weight", CurrentValue=false, Flag="E", Callback=function(s) _G.E=s while _G.E do task.wait() for _,v in pairs(p.Backpack:GetChildren()) do if v.Name=="Double Weight" then v.Parent=c end end end end }
+T:CreateToggle{ Name="Farm Weight", CurrentValue=false, Flag="F", Callback=function(s) _G.F=s while _G.F do task.wait(.5) for _,v in pairs(c:GetChildren()) do if v.Name=="Double Weight" then v:Activate() end end end end }
+T:CreateToggle{ Name="Lock Player", CurrentValue=false, Flag="L", Callback=function(s) for _,v in pairs(c:GetChildren()) do if v:IsA'MeshPart' then v.Anchored=s end end end }
+
+local X=T:CreateSection"Extra"
+T:CreateButton{ Name="Del Hud", Callback=function() p.PlayerGui.HUD:Destroy() end }
+T:CreateButton{ Name="Del Rumble", Callback=function() r.TourneyQ:Destroy() end }
+T:CreateButton{ Name="Del Clouds", Callback=function() w.Clouds:Destroy() for _,v in pairs(p.PlayerScripts:GetChildren()) do if v.Name=="LocalScript" then v:Destroy() end end end }
+T:CreateButton{ Name="Tp To Safe Zone", Callback=function() c.HumanoidRootPart.CFrame=CFrame.new(-1938,146,-5296) end }
+T:CreateButton{ Name="Hide Inventory", Callback=function() loadstring(game:HttpGet("https://pastebin.com/raw/8W1draqT",true))() end }
+T:CreateButton{ Name="Low Ping", Callback=function()
+	local t=w.Terrain
+	t.WaterWaveSize=0;t.WaterWaveSpeed=0;t.WaterReflectance=0;t.WaterTransparency=0
+	d.GlobalShadows=false;d.FogEnd=9e9;d.Brightness=0
+	settings().Rendering.QualityLevel="Level01"
+	for _,v in pairs(game:GetDescendants())do if v:IsA'Part'or v:IsA'UnionOperation'or v:IsA'MeshPart'or v:IsA'CornerWedgePart'or v:IsA'TrussPart'then v.Material="Plastic" v.Reflectance=0 elseif v:IsA'Decal'then v.Transparency=1 elseif v:IsA'ParticleEmitter'or v:IsA'Trail'then v.Lifetime=NumberRange.new(0) elseif v:IsA'Explosion'then v.BlastPressure=1 v.BlastRadius=1 end end
+	for _,e in pairs(d:GetChildren())do if e:IsA'BlurEffect'or e:IsA'SunRaysEffect'or e:IsA'ColorCorrectionEffect'or e:IsA'BloomEffect'or e:IsA'DepthOfFieldEffect'then e.Enabled=false end end
+end }
+
+local function RL(n) for i=1,n do if not _G.running then break end e:SignalPromptGamePassPurchaseFinished(p,5949054,true) print("Dupe "..i) task.wait(.65) end print("Dupe Done "..n) end
+local D=W:CreateTab"Duping"
+D:CreateSection"Duping"
+D:CreateButton{ Name="Auto Dupe 830", Callback=function() _G.running=true RL(829) end }
+D:CreateButton{ Name="Auto Dupe 135", Callback=function() _G.running=true RL(134) end }
+
+local I=W:CreateTab"Information"
+local L1=I:CreateLabel"Strength: 0"
+local L2=I:CreateLabel"Gained: 0"
+local L3=I:CreateLabel"Weight: 0"
+
+task.spawn(function() repeat task.wait(.5) L1:Set("Strength: "..s.Value) until s.Value>=9e20 end)
+task.spawn(function() local v=l.Value local t=0 repeat task.wait(.05) local d=l.Value-v t=t+d v=l.Value L2:Set("Gained: "..t) until t>=9e17 end)
+task.spawn(function() repeat task.wait(.05) local n=0 for _,v in ipairs(p.Backpack:GetChildren())do if v.Name=="Double Weight"then n=n+1 end end if n==0 then for _,v in ipairs(c:GetChildren())do if v.Name=="Double Weight"then n=n+1 end end end L3:Set("Weight: "..n) until n>=99999999 end)
+
+local M=W:CreateTab"Misc"
+M:CreateSection"Misc"
+M:CreateButton{ Name="Day/Night", Callback=function() if d.ClockTime==19 then d.ClockTime=14 elseif d.ClockTime==14 then d.ClockTime=19 end end }
+M:CreateButton{ Name="Anti Hit", Callback=function() loadstring(game:HttpGet("https://raw.githubusercontent.com/MidnightScriptz/KaidoAntiH/main/loader",true))() end }
+M:CreateButton{ Name="Strength Spy", Callback=function() loadstring(game:HttpGet("https://raw.githubusercontent.com/MidnightScriptz/KaidoSpy/main/loader",true))() end }
+M:CreateButton{ Name="Rainbow Gloves", Callback=function() while true do for _,c in ipairs{"Pink","Green","Blue"}do b.Remotes.SellWep:FireServer(c) task.wait(.2) end end end }
+
+local C=W:CreateTab"Credits"
+C:CreateSection"Credits - Auberon_Altas"
+R:LoadConfiguration()
