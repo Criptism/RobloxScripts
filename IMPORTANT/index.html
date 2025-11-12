@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>RNG GUI (with Side History)</title>
+  <title>RNG GUI (with Auto Roll & Debounce)</title>
   <style>
     html,body {
       height: 100%;
@@ -69,6 +69,7 @@
       font-weight: 600;
       cursor: pointer;
       transition: background 0.15s;
+      margin: 5px;
     }
 
     button:hover { background: #1c70d8; }
@@ -138,6 +139,7 @@
       <div id="label" class="label">...</div>
       <div id="attempt" class="attempt">Attempt #0</div>
       <button id="rollBtn">Roll</button>
+      <button id="autoBtn">▶️ Auto Roll</button>
       <div id="counter" class="counter">🎯 Hits: 0</div>
       <div id="picked" class="picked" aria-live="polite"></div>
       <div class="sub">Target: <code>tttttttttttttg</code></div>
@@ -175,10 +177,12 @@
       "Cosmic balance..."
     ];
     const MAX_HISTORY = 100;
+    const DEBOUNCE_TIME = 500; // 0.5s
 
     const labelEl = document.getElementById('label');
     const pickedEl = document.getElementById('picked');
     const rollBtn = document.getElementById('rollBtn');
+    const autoBtn = document.getElementById('autoBtn');
     const counterEl = document.getElementById('counter');
     const attemptEl = document.getElementById('attempt');
     const historyEl = document.getElementById('history');
@@ -186,6 +190,9 @@
     let hitCount = 0;
     let attemptCount = 0;
     let historyLog = [];
+    let canRoll = true;
+    let autoRolling = false;
+    let autoInterval = null;
 
     function randomIndex(max) {
       if (window.crypto && window.crypto.getRandomValues) {
@@ -200,7 +207,6 @@
         historyEl.innerHTML = "<strong>History:</strong><span class='history-entry'>No attempts yet.</span>";
         return;
       }
-
       const entries = historyLog.map(entry => {
         const colorClass = entry.hit ? "hit" : "miss";
         return `<div class="history-entry ${colorClass}">#${entry.attempt}: "${entry.string}" ${entry.hit ? "🎯 HIT!" : ""}</div>`;
@@ -210,6 +216,10 @@
     }
 
     function rollOnce() {
+      if (!canRoll) return;
+      canRoll = false;
+      setTimeout(() => canRoll = true, DEBOUNCE_TIME); // debounce 0.5s
+
       attemptCount++;
       const idx = randomIndex(strings.length);
       const picked = strings[idx];
@@ -236,7 +246,22 @@
       attemptEl.textContent = `Attempt #${attemptCount}`;
     }
 
+    // Manual roll with debounce
     rollBtn.addEventListener("click", rollOnce);
+
+    // Auto-roll toggle
+    autoBtn.addEventListener("click", () => {
+      if (!autoRolling) {
+        autoRolling = true;
+        autoBtn.textContent = "⏸️ Stop Auto Roll";
+        autoInterval = setInterval(rollOnce, 500);
+      } else {
+        autoRolling = false;
+        autoBtn.textContent = "▶️ Auto Roll";
+        clearInterval(autoInterval);
+      }
+    });
+
     updateHistoryDisplay();
   </script>
 </body>
