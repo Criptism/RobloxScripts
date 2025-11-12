@@ -162,8 +162,6 @@
     const attemptEl = document.getElementById('attempt');
     const historyEl = document.getElementById('history');
 
-    const hitSound = new Audio('hit.mp3');
-    const missSound = new Audio('miss.mp3');
 
     let hitCount = 0;
     let attemptCount = 0;
@@ -200,12 +198,10 @@
       if (isHit) {
         labelEl.textContent = "🎯 RNG hit! The target string was picked!";
         hitCount++;
-        hitSound.play();
         historyLog.push({ attempt: attemptCount, string: picked, hit: true });
         attemptCount = 0;
       } else {
         labelEl.textContent = `❌ RNG missed. Nothing happens. (Attempt #${attemptCount})`;
-        missSound.play();
         historyLog.push({ attempt: attemptCount, string: picked, hit: false });
       }
 
