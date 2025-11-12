@@ -3,28 +3,28 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>RNG GUI (100 Strings + Counter + Side History)</title>
+  <title>RNG GUI (with Sound + Side History)</title>
   <style>
-    html,body{
-      height:100%;
-      margin:0;
+    html,body {
+      height: 100%;
+      margin: 0;
       font-family: "Source Sans Pro", "Segoe UI", Roboto, Arial, sans-serif;
       background: #111;
       color: #fff;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
     }
 
     .layout {
       display: flex;
       flex-direction: row;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       width: 100%;
       height: 100%;
-      gap: 40px;
-      padding: 20px;
+      gap: 60px;
+      padding: 40px;
       box-sizing: border-box;
     }
 
@@ -33,20 +33,20 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       flex: none;
     }
 
     .label {
       width: 400px;
       min-height: 80px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       margin-bottom: 20px;
       background: rgba(0,0,0,0.75);
       border-radius: 12px;
-      font-weight:700;
+      font-weight: 700;
       font-size: clamp(18px, 3.5vw, 26px);
       box-shadow: 0 6px 18px rgba(0,0,0,0.6);
       user-select: none;
@@ -66,8 +66,8 @@
       border: 0;
       background: #2e8bff;
       color: #fff;
-      font-weight:600;
-      cursor:pointer;
+      font-weight: 600;
+      cursor: pointer;
       transition: background 0.15s;
     }
 
@@ -95,11 +95,12 @@
       font-weight: 600;
     }
 
-    /* --- SIDE HISTORY PANEL --- */
     .history {
+      align-self: flex-start;
+      margin-top: 20px;
       background: rgba(255,255,255,0.05);
       border-radius: 10px;
-      max-height: 400px;
+      max-height: 80vh;
       width: 320px;
       overflow-y: auto;
       padding: 10px 15px;
@@ -149,26 +150,9 @@
   </div>
 
   <script>
-    const strings = [
-      "tttttttttttttg", "Yes!", "No!", "Maybe...", "Hmm...", "Error: undefined", "Success!",
-      "Try again later", "Absolutely!", "Probably not", "Wait—what?", "Loading...", "Done!",
-      "Calculating...", "Processing...", "Lucky guess?", "Better luck next time!", "Not today",
-      "Whoops!", "Yesn't", "Why tho?", "You wish!", "Suspicious...", "Almost!", "Retry?",
-      "Boom!", "Kaboom!", "System overloaded", "404 Not Found", "Approved", "Denied", "Granted",
-      "Refused", "It’s fate!", "Coin flip...", "Heads!", "Tails!", "Yup", "Nope", "Try harder!",
-      "L", "W", "Maybe later", "Hmmmm", "Suspense...", "Wait for it...", "Ha!", "Glitched?",
-      "Randomized!", "Pick again", "Recalculating...", "Deja vu", "In progress...", "Pending...",
-      "Done already?", "Yay!", "Bruh", "Seriously?", "Hmm.", "Oh no", "Oh yes", "Why not?",
-      "Wait...", "Processing error", "Debugging...", "Restart required", "Rebooting...",
-      "Reticulating splines...", "Loading data...", "Success!!", "Try one more time", "No signal",
-      "Powering up...", "Access granted", "Access denied", "Hello world!", "Ping!", "Pong!",
-      "Beep boop", "Calculating odds...", "Luck = 0", "Luck = 100", "This is fine",
-      "That’s illegal", "Corrupted", "Rewriting reality...", "You saw nothing", "RNG loves you",
-      "RNG hates you", "Neutral outcome", "Cosmic balance...", "Out of bounds", "Random seed",
-      "Try again?", "Maybe yes", "Maybe no", "Quantum fluctuation", "Entropy rising..."
-    ];
+    const strings = [/* same 100 strings as before */ "tttttttttttttg", "Yes!", "No!", "Maybe...", "Hmm...", "Error: undefined", "Success!", "Try again later", "Absolutely!", "Probably not", "Wait—what?", "Loading...", "Done!", "Calculating...", "Processing...", "Lucky guess?", "Better luck next time!", "Not today", "Whoops!", "Yesn't", "Why tho?", "You wish!", "Suspicious...", "Almost!", "Retry?", "Boom!", "Kaboom!", "System overloaded", "404 Not Found", "Approved", "Denied", "Granted", "Refused", "It’s fate!", "Coin flip...", "Heads!", "Tails!", "Yup", "Nope", "Try harder!", "L", "W", "Maybe later", "Hmmmm", "Suspense...", "Wait for it...", "Ha!", "Glitched?", "Randomized!", "Pick again", "Recalculating...", "Deja vu", "In progress...", "Pending...", "Done already?", "Yay!", "Bruh", "Seriously?", "Hmm.", "Oh no", "Oh yes", "Why not?", "Wait...", "Processing error", "Debugging...", "Restart required", "Rebooting...", "Reticulating splines...", "Loading data...", "Success!!", "Try one more time", "No signal", "Powering up...", "Access granted", "Access denied", "Hello world!", "Ping!", "Pong!", "Beep boop", "Calculating odds...", "Luck = 0", "Luck = 100", "This is fine", "That’s illegal", "Corrupted", "Rewriting reality...", "You saw nothing", "RNG loves you", "RNG hates you", "Neutral outcome", "Cosmic balance...", "Out of bounds", "Random seed", "Try again?", "Maybe yes", "Maybe no", "Quantum fluctuation", "Entropy rising..."];
 
-    const TARGET = "tttttttttttttg";
+    const TARGETS = ["tttttttttttttg", "Success!", "Kaboom!", "Ping!", "Coin flip...", "You saw nothing", "Entropy rising...", "Access granted", "Hello world!", "Recalculating...", "Reticulating splines...", "Random seed", "Quantum fluctuation", "RNG loves you", "Cosmic balance..."];
     const MAX_HISTORY = 100;
 
     const labelEl = document.getElementById('label');
@@ -177,6 +161,9 @@
     const counterEl = document.getElementById('counter');
     const attemptEl = document.getElementById('attempt');
     const historyEl = document.getElementById('history');
+
+    const hitSound = new Audio('hit.mp3');
+    const missSound = new Audio('miss.mp3');
 
     let hitCount = 0;
     let attemptCount = 0;
@@ -208,32 +195,22 @@
       attemptCount++;
       const idx = randomIndex(strings.length);
       const picked = strings[idx];
-      const isHit = picked === TARGET;
+      const isHit = TARGETS.includes(picked);
 
       if (isHit) {
         labelEl.textContent = "🎯 RNG hit! The target string was picked!";
         hitCount++;
+        hitSound.play();
         historyLog.push({ attempt: attemptCount, string: picked, hit: true });
-        attemptCount = 0; // reset attempts after hit
+        attemptCount = 0;
       } else {
         labelEl.textContent = `❌ RNG missed. Nothing happens. (Attempt #${attemptCount})`;
+        missSound.play();
         historyLog.push({ attempt: attemptCount, string: picked, hit: false });
       }
 
-      // Auto-clear when history fills up
       if (historyLog.length > MAX_HISTORY) {
         historyLog = [];
         historyLog.push({ attempt: "-", string: "History cleared automatically", hit: false });
       }
 
-      pickedEl.textContent = `Picked string: "${picked}" (index ${idx + 1})`;
-      counterEl.textContent = `🎯 Hits: ${hitCount}`;
-      attemptEl.textContent = `Attempt #${attemptCount}`;
-      updateHistoryDisplay();
-    }
-
-    rollBtn.addEventListener('click', rollOnce);
-    rollOnce();
-  </script>
-</body>
-</html>
