@@ -73,11 +73,19 @@
       color: #00ff9d;
       font-weight: 600;
     }
+
+    .attempt {
+      margin-top: 6px;
+      font-size: 14px;
+      color: #ffcc00;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div id="label" class="label">...</div>
+    <div id="attempt" class="attempt">Attempt #0</div>
     <button id="rollBtn">Roll</button>
     <div id="counter" class="counter">🎯 Hits: 0</div>
     <div id="picked" class="picked" aria-live="polite"></div>
@@ -118,10 +126,13 @@
     const pickedEl = document.getElementById('picked');
     const rollBtn = document.getElementById('rollBtn');
     const counterEl = document.getElementById('counter');
+    const attemptEl = document.getElementById('attempt');
 
     let hitCount = 0;
+    let attemptCount = 0;
 
     function rollOnce() {
+      attemptCount++;
       const idx = randomIndex(strings.length);
       const picked = strings[idx];
 
@@ -129,11 +140,12 @@
         labelEl.textContent = "🎯 RNG hit! The target string was picked!";
         hitCount++;
       } else {
-        labelEl.textContent = "❌ RNG missed. Nothing happens.";
+        labelEl.textContent = `❌ RNG missed. Nothing happens. (Attempt #${attemptCount})`;
       }
 
       pickedEl.textContent = 'Picked string: "' + picked + '" (index ' + (idx + 1) + ')';
       counterEl.textContent = `🎯 Hits: ${hitCount}`;
+      attemptEl.textContent = `Attempt #${attemptCount}`;
     }
 
     rollBtn.addEventListener('click', rollOnce);
