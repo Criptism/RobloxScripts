@@ -17,9 +17,11 @@ local GEM_NAMES = {
 }
 
 local enabled = false
+local antiAfk = true
 
 -- Anti-AFK: stops Roblox from kicking you for being idle after 20 minutes
 player.Idled:Connect(function()
+	if not antiAfk then return end
 	VirtualUser:CaptureController()
 	VirtualUser:ClickButton2(Vector2.new())
 end)
@@ -57,36 +59,43 @@ gui.ResetOnSpawn = false
 gui.IgnoreGuiInset = true
 gui.Parent = player:WaitForChild("PlayerGui")
 
-local button = Instance.new("TextButton")
-button.Size = UDim2.fromOffset(140, 44)
-button.AnchorPoint = Vector2.new(1, 0)
-button.Position = UDim2.new(1, -16, 0, 16)
-button.Font = Enum.Font.GothamBold
-button.TextSize = 18
-button.TextColor3 = Color3.new(1, 1, 1)
-button.AutoButtonColor = true
-button.Parent = gui
+local function makeButton(yOffset)
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.fromOffset(170, 44)
+	btn.AnchorPoint = Vector2.new(1, 0)
+	btn.Position = UDim2.new(1, -16, 0, yOffset)
+	btn.Font = Enum.Font.GothamBold
+	btn.TextSize = 18
+	btn.TextColor3 = Color3.new(1, 1, 1)
+	btn.AutoButtonColor = true
+	btn.Parent = gui
 
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 10)
-corner.Parent = button
-
-local function refreshButton()
-	if enabled then
-		button.Text = "Gems: ON"
-		button.BackgroundColor3 = Color3.fromRGB(46, 160, 67)
-	else
-		button.Text = "Gems: OFF"
-		button.BackgroundColor3 = Color3.fromRGB(190, 55, 55)
-	end
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 10)
+	corner.Parent = btn
+	return btn
 end
 
-button.Activated:Connect(function()
+local function paint(btn, label, on)
+	btn.Text = label .. (on and ": ON" or ": OFF")
+	btn.BackgroundColor3 = on and Color3.fromRGB(46, 160, 67) or Color3.fromRGB(190, 55, 55)
+end
+
+local gemButton = makeButton(16)
+local afkButton = makeButton(68)
+
+gemButton.Activated:Connect(function()
 	enabled = not enabled
-	refreshButton()
+	paint(gemButton, "Gems", enabled)
 end)
 
-refreshButton()
+afkButton.Activated:Connect(function()
+	antiAfk = not antiAfk
+	paint(afkButton, "Anti-AFK", antiAfk)
+end)
+
+paint(gemButton, "Gems", enabled)
+paint(afkButton, "Anti-AFK", antiAfk)
 
 -- Main loop: every frame, walk toward the closest gem
 task.spawn(function()
