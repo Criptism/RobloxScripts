@@ -1,6 +1,6 @@
 -- GemWalker (LocalScript)
 -- Put in StarterPlayer > StarterPlayerScripts
--- Walks your character to the closest gem (within RADIUS studs) in Workspace.LocalGemVisuals.
+-- Walks your character to the closest gem in Workspace.LocalGemVisuals.
 -- Use the ON/OFF button in the top right to toggle.
 
 local Players = game:GetService("Players")
@@ -8,8 +8,6 @@ local Workspace = game:GetService("Workspace")
 
 local player = Players.LocalPlayer
 local gemFolder = Workspace:WaitForChild("LocalGemVisuals")
-
-local RADIUS = 50 -- only go for gems within this many studs
 
 local GEM_NAMES = {
 	["1"] = true, ["2"] = true, ["3"] = true,
@@ -28,15 +26,15 @@ local function getGemPosition(gem)
 	return nil
 end
 
--- Closest gem to rootPos that is inside the radius
+-- Closest gem to rootPos
 local function findNearestGem(rootPos)
-	local nearest, nearestDist = nil, RADIUS
+	local nearest, nearestDist = nil, math.huge
 	for _, gem in ipairs(gemFolder:GetChildren()) do
 		if GEM_NAMES[gem.Name] then
 			local pos = getGemPosition(gem)
 			if pos then
 				local dist = (pos - rootPos).Magnitude
-				if dist <= nearestDist then
+				if dist < nearestDist then
 					nearest, nearestDist = gem, dist
 				end
 			end
@@ -83,7 +81,7 @@ end)
 
 refreshButton()
 
--- Main loop: every frame, walk toward the closest gem in range
+-- Main loop: every frame, walk toward the closest gem
 task.spawn(function()
 	while true do
 		task.wait() -- one frame
