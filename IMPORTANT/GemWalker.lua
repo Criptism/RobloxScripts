@@ -5,6 +5,7 @@
 
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
+local VirtualUser = game:GetService("VirtualUser")
 
 local player = Players.LocalPlayer
 local gemFolder = Workspace:WaitForChild("LocalGemVisuals")
@@ -16,6 +17,12 @@ local GEM_NAMES = {
 }
 
 local enabled = false
+
+-- Anti-AFK: stops Roblox from kicking you for being idle after 20 minutes
+player.Idled:Connect(function()
+	VirtualUser:CaptureController()
+	VirtualUser:ClickButton2(Vector2.new())
+end)
 
 local function getGemPosition(gem)
 	if gem:IsA("BasePart") then
