@@ -1,15 +1,15 @@
 -- GemWalker (LocalScript)
 -- Put in StarterPlayer > StarterPlayerScripts
--- Walks your character to the exact position of each gem in LocalGemVisuals.
+-- Walks your character to the closest gem (within RADIUS studs) in Workspace.LocalGemVisuals.
 -- Use the ON/OFF button in the top right to toggle.
 
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 
 local player = Players.LocalPlayer
-
--- LocalGemVisuals folder is in Workspace
 local gemFolder = Workspace:WaitForChild("LocalGemVisuals")
+
+local RADIUS = 50 -- only go for gems within this many studs
 
 local GEM_NAMES = {
 	["1"] = true, ["2"] = true, ["3"] = true,
@@ -28,53 +28,21 @@ local function getGemPosition(gem)
 	return nil
 end
 
+-- Closest gem to rootPos that is inside the radius
 local function findNearestGem(rootPos)
-	local nearest, nearestDist = nil, math.huge
+	local nearest, nearestDist = nil, RADIUS
 	for _, gem in ipairs(gemFolder:GetChildren()) do
 		if GEM_NAMES[gem.Name] then
 			local pos = getGemPosition(gem)
 			if pos then
 				local dist = (pos - rootPos).Magnitude
-				if dist < nearestDist then
+				if dist <= nearestDist then
 					nearest, nearestDist = gem, dist
 				end
 			end
 		end
 	end
 	return nearest
-end
-
--- Walks to the gem's exact position (re-targets each step in case it moves)
-local function walkToGem(gem, hum, root)
-	local lastPos = root.Position
-	local stuckTime = 0
-
-	while enabled and gem.Parent and hum.Health > 0 do
-		local pos = getGemPosition(gem)
-		if not pos then return end
-
-		-- Arrived at the exact position
-		if (pos - root.Position).Magnitude <= 1.5 then
-			return
-		end
-
-		hum:MoveTo(pos)
-		task.wait(0.1)
-
-		-- Jump if we stop making progress (blocked by a small obstacle)
-		if (root.Position - lastPos).Magnitude < 0.2 then
-			stuckTime += 0.1
-			if stuckTime > 0.5 then
-				hum.Jump = true
-			end
-			if stuckTime > 4 then
-				return -- give up on this gem, pick another
-			end
-		else
-			stuckTime = 0
-		end
-		lastPos = root.Position
-	end
 end
 
 -- Toggle UI (top right)
@@ -115,9 +83,11 @@ end)
 
 refreshButton()
 
+-- Main loop: every frame, walk toward the closest gem in range
 task.spawn(function()
 	while true do
-		task.wait(0.1)
+		task.wait() -- one frame
+
 		if not enabled then continue end
 
 		local char = player.Character
@@ -127,7 +97,7 @@ task.spawn(function()
 		if hum and root and hum.Health > 0 then
 			local gem = findNearestGem(root.Position)
 			if gem then
-				walkToGem(gem, hum, root)
+				hum:MoveTo(getGemPosition(gem))
 			end
 		end
 	end
